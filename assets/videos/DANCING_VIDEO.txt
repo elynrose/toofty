@@ -1,0 +1,19 @@
+===========================================
+DANCING VIDEO - PLACE YOUR VIDEO HERE
+===========================================
+
+Location: /Users/genesisdevsmac/Desktop/toofty/assets/videos/
+
+Required file name (exact name, case-sensitive):
+
+dancing.mp4  - Monster dancing celebration video
+
+===========================================
+IMPORTANT:
+- File name must be: dancing.mp4 (exact, case-sensitive)
+- File must be .mp4 format
+- Video will play automatically when brushing session completes
+- Video will loop while the celebration dialog is shown
+- Confetti will also appear on screen!
+===========================================
+
