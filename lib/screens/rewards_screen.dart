@@ -143,7 +143,7 @@ class _ClaimRewardsTab extends StatelessWidget {
               Expanded(
                 child: _emptyState(
                   icon: Icons.card_giftcard,
-                  message: 'No rewards yet.\nParents can add them in Manage Rewards.',
+                  message: 'No rewards yet.\nTap + in Manage Rewards to add one.',
                 ),
               )
             else

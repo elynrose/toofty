@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete your Toofty account</title>
+  <style>
+    :root {
+      --sky: #d1efff;
+      --primary: #5eb8e8;
+      --text: #2d3748;
+      --muted: #64748b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(180deg, var(--sky) 0%, #f8fcff 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin: 0 0 8px;
+    }
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 24px rgba(94, 184, 232, 0.15);
+      margin-bottom: 24px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      margin: 0 0 12px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    li { margin-bottom: 8px; }
+    .cta {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: 12px;
+      margin-top: 8px;
+    }
+    .cta:hover { opacity: 0.92; }
+    .note {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 32px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Delete your Toofty account</h1>
+    <p class="subtitle">Request removal of your account and associated data from Toofty.</p>
+
+    <div class="card">
+      <h2>What we delete</h2>
+      <ul>
+        <li>Your Firebase authentication account (email / Google sign-in)</li>
+        <li>Your user profile in our database</li>
+        <li>All children profiles you created</li>
+        <li>Brushing history, scores, and reward claims</li>
+        <li>Custom rewards and app settings stored for your account</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>What we may keep</h2>
+      <ul>
+        <li>Records we are required to retain for legal, security, or fraud-prevention purposes (if any), for the minimum period required by law</li>
+        <li>Aggregated, non-identifiable analytics that cannot be linked back to you</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>How to request deletion</h2>
+      <p>
+        Email us from the address linked to your Toofty account. Include
+        <strong>“Account deletion request”</strong> in the subject line.
+        We will verify ownership and process your request within
+        <strong>30 days</strong>.
+      </p>
+      <a
+        class="cta"
+        id="mailto-link"
+        href="mailto:briktapinc@gmail.com?subject=Toofty%20account%20deletion%20request&amp;body=Please%20delete%20my%20Toofty%20account%20and%20associated%20data.%0A%0ARegistered%20email%3A%20"
+      >Email deletion request</a>
+      <p class="note">
+        Or send an email manually to
+        <a href="mailto:briktapinc@gmail.com">briktapinc@gmail.com</a>
+        from your registered address.
+      </p>
+    </div>
+
+    <footer>
+      Toofty · iOS com.briktap.toofty · Android com.todoos.todoos
+    </footer>
+  </main>
+</body>
+</html>

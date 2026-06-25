@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
-import '../providers/child_provider.dart';
 import '../theme/app_colors.dart';
-import '../providers/rewards_provider.dart';
-import 'main_shell.dart';
+import '../widgets/auth_gate.dart';
 
 /// Full-screen video splash — plays through before entering the app.
 class SplashScreen extends StatefulWidget {
@@ -28,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     _initVideo();
-    _waitForAppReady();
+    _appReady = true;
   }
 
   Future<void> _initVideo() async {
@@ -68,25 +65,12 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  Future<void> _waitForAppReady() async {
-    final childProvider = context.read<ChildProvider>();
-    final rewardsProvider = context.read<RewardsProvider>();
-
-    while (!childProvider.isInitialized || !rewardsProvider.isInitialized) {
-      await Future.delayed(const Duration(milliseconds: 50));
-      if (!mounted) return;
-    }
-
-    _appReady = true;
-    _tryNavigate();
-  }
-
   void _tryNavigate() {
     if (_navigated || !_appReady || !_videoFinished || !mounted) return;
     _navigated = true;
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const MainShell()),
+      MaterialPageRoute(builder: (_) => const AuthGate()),
     );
   }
 

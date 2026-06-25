@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../config/app_links.dart';
 import '../models/child.dart';
 import '../models/child_gender.dart';
 import '../models/monster_catalog.dart';
+import '../providers/auth_provider.dart';
 import '../providers/child_provider.dart';
+import '../utils/open_url.dart';
+import '../utils/require_parent_pin.dart';
+import '../widgets/adjust_points_dialog.dart';
 import 'add_child_screen.dart';
 
 /// Home screen showing all children with their scores
@@ -19,7 +24,7 @@ class ChildrenListScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
-          'todoos',
+          'Toofty',
           style: TextStyle(
             color: AppColors.textPrimary,
             fontSize: 28,
@@ -27,6 +32,71 @@ class ChildrenListScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          Consumer<AuthProvider>(
+            builder: (context, auth, _) {
+              final email = auth.user?.email;
+              return PopupMenuButton<String>(
+                icon: CircleAvatar(
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                  child: Text(
+                    (email?.isNotEmpty == true ? email![0] : '?').toUpperCase(),
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                onSelected: (value) async {
+                  if (value == 'sign-out') {
+                    await auth.signOut();
+                  } else if (value == 'delete-account') {
+                    if (context.mounted) {
+                      await openExternalUrl(
+                        context,
+                        AppLinks.accountDeletionUrl,
+                      );
+                    }
+                  }
+                },
+                itemBuilder: (context) => [
+                  if (email != null)
+                    PopupMenuItem(
+                      enabled: false,
+                      child: Text(
+                        email,
+                        style: TextStyle(
+                          color: AppColors.textPrimary.withValues(alpha: 0.7),
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  const PopupMenuItem(
+                    value: 'delete-account',
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete_outline, size: 20),
+                        SizedBox(width: 8),
+                        Text('Delete account & data'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem(
+                    value: 'sign-out',
+                    child: Row(
+                      children: [
+                        Icon(Icons.logout, size: 20),
+                        SizedBox(width: 8),
+                        Text('Sign out'),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: Consumer<ChildProvider>(
         builder: (context, childProvider, _) {
@@ -106,6 +176,16 @@ class ChildrenListScreen extends StatelessWidget {
                             ),
                           );
                         },
+                        onAdjustPoints: () async {
+                          final allowed = await requireParentPin(context);
+                          if (!allowed || !context.mounted) return;
+                          await showAdjustPointsDialog(
+                            context,
+                            childId: child.id,
+                            childName: child.name,
+                            currentPoints: child.points,
+                          );
+                        },
                         onTap: () async {
                           // Set as current child
                           await childProvider.setCurrentChild(child);
@@ -152,11 +232,13 @@ class _ChildCard extends StatelessWidget {
   final Child child;
   final VoidCallback onTap;
   final VoidCallback onEdit;
+  final VoidCallback onAdjustPoints;
 
   const _ChildCard({
     required this.child,
     required this.onTap,
     required this.onEdit,
+    required this.onAdjustPoints,
   });
 
   @override
@@ -291,45 +373,48 @@ class _ChildCard extends StatelessWidget {
                 tooltip: 'Edit child',
                 onPressed: onEdit,
               ),
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.textPrimary,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: AppColors.accent,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          '${child.points}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+              GestureDetector(
+                onTap: onAdjustPoints,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.textPrimary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: AppColors.accent,
+                            size: 20,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 5),
+                          Text(
+                            '${child.points}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'points',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
+                    const SizedBox(height: 4),
+                    Text(
+                      'points',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

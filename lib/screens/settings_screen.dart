@@ -6,6 +6,10 @@ import 'package:provider/provider.dart';
 import '../models/brushing_settings.dart';
 import '../models/brushing_activity.dart';
 import '../providers/child_provider.dart';
+import '../providers/parent_pin_provider.dart';
+import '../utils/require_parent_pin.dart';
+import '../widgets/adjust_points_dialog.dart';
+import '../widgets/parent_pin_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -163,6 +167,134 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Future<void> _setParentPin() async {
+    final pin = await showParentPinDialog(
+      context,
+      mode: ParentPinDialogMode.set,
+    );
+    if (pin == null || !mounted) return;
+
+    await context.read<ParentPinProvider>().setPin(pin);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Parent PIN saved'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
+  Future<void> _changeParentPin() async {
+    final result = await showParentPinDialog(
+      context,
+      mode: ParentPinDialogMode.change,
+    );
+    if (result == null || !mounted) return;
+
+    final parts = result.split(':');
+    if (parts.length != 3 || parts[0] != 'change') return;
+
+    final ok = await context.read<ParentPinProvider>().changePin(
+          currentPin: parts[1],
+          newPin: parts[2],
+        );
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(ok ? 'Parent PIN updated' : 'Current PIN was incorrect'),
+        backgroundColor: ok ? Colors.green : Colors.red,
+      ),
+    );
+  }
+
+  Future<void> _adjustPoints() async {
+    final childProvider = context.read<ChildProvider>();
+    final child = childProvider.currentChild;
+    if (child == null) return;
+
+    final allowed = await requireParentPin(context);
+    if (!allowed || !mounted) return;
+
+    await showAdjustPointsDialog(
+      context,
+      childId: child.id,
+      childName: child.name,
+      currentPoints: child.points,
+    );
+  }
+
+  Widget _buildParentControls() {
+    return Consumer2<ParentPinProvider, ChildProvider>(
+      builder: (context, pinProvider, childProvider, _) {
+        final child = childProvider.currentChild;
+
+        return Card(
+          margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Parent controls',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  pinProvider.hasPin
+                      ? 'PIN protects settings and point adjustments'
+                      : 'Set a PIN to protect parent-only actions',
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                ),
+                const SizedBox(height: 16),
+                if (!pinProvider.hasPin)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _setParentPin,
+                      icon: const Icon(Icons.lock_outline),
+                      label: const Text('Set parent PIN'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  )
+                else
+                  OutlinedButton.icon(
+                    onPressed: _changeParentPin,
+                    icon: const Icon(Icons.lock_reset),
+                    label: const Text('Change parent PIN'),
+                  ),
+                if (child != null) ...[
+                  const SizedBox(height: 12),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.star, color: AppColors.accent),
+                    title: Text('${child.name}\'s points'),
+                    subtitle: Text('${child.points} points'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: _adjustPoints,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   String _formatTime(int seconds) {
     final minutes = seconds ~/ 60;
     final secs = seconds % 60;
@@ -209,6 +341,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Column(
         children: [
+          _buildParentControls(),
           // Header
           Padding(
             padding: const EdgeInsets.all(16),

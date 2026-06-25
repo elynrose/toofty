@@ -1,0 +1,4 @@
+#!/bin/sh
+# Wrapper so Flutter native-asset hooks can locate the iOS SDK during Xcode builds.
+export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
+exec /usr/bin/xcrun "$@"

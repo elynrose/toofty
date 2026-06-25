@@ -2,20 +2,57 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/brushing_settings.dart';
+import '../services/tenant_storage.dart';
 
 /// Provider to manage brushing settings and state
 class BrushingProvider with ChangeNotifier {
   BrushingSettings _settings = BrushingSettings();
   bool _isInitialized = false;
+  String? _tenantId;
 
   BrushingSettings get settings => _settings;
   bool get isInitialized => _isInitialized;
+  String? get tenantId => _tenantId;
+
+  Future<void> bindTenant(String? userId) async {
+    if (_tenantId == userId && _isInitialized) return;
+
+    _tenantId = userId;
+    _settings = BrushingSettings();
+    _isInitialized = false;
+    notifyListeners();
+
+    if (userId == null) {
+      _isInitialized = true;
+      notifyListeners();
+      return;
+    }
+
+    await loadSettings();
+  }
+
+  TenantStorage? get _storage =>
+      _tenantId == null ? null : TenantStorage(_tenantId!);
 
   /// Load settings from shared preferences
   Future<void> loadSettings() async {
+    final storage = _storage;
+    if (storage == null) {
+      _isInitialized = true;
+      notifyListeners();
+      return;
+    }
+
     try {
       final prefs = await SharedPreferences.getInstance();
-      final settingsJson = prefs.getString('brushing_settings');
+
+      await TenantStorage.migrateLegacyString(
+        userId: _tenantId!,
+        legacyKey: 'brushing_settings',
+        tenantKeyName: 'brushing_settings',
+      );
+
+      final settingsJson = prefs.getString(storage.prefKey('brushing_settings'));
       
       if (settingsJson != null) {
         _settings = BrushingSettings.fromJson(
@@ -33,11 +70,14 @@ class BrushingProvider with ChangeNotifier {
 
   /// Save settings to shared preferences (persists to phone storage)
   Future<bool> saveSettings(BrushingSettings newSettings) async {
+    final storage = _storage;
+    if (storage == null) return false;
+
     try {
       _settings = newSettings;
       final prefs = await SharedPreferences.getInstance();
       final success = await prefs.setString(
-        'brushing_settings',
+        storage.prefKey('brushing_settings'),
         json.encode(_settings.toJson()),
       );
       

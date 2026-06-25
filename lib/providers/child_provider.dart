@@ -6,6 +6,7 @@ import '../models/child_gender.dart';
 import '../models/monster_catalog.dart';
 import '../models/brushing_history.dart';
 import '../models/brushing_settings.dart';
+import '../services/tenant_storage.dart';
 
 /// Provider to manage children and their brushing history
 class ChildProvider with ChangeNotifier {
@@ -13,25 +14,72 @@ class ChildProvider with ChangeNotifier {
   Child? _currentChild;
   Map<String, BrushingHistory> _history = {};
   bool _isInitialized = false;
+  String? _tenantId;
 
   List<Child> get children => _children;
   Child? get currentChild => _currentChild;
   bool get isInitialized => _isInitialized;
+  String? get tenantId => _tenantId;
+
+  /// Switch to a user's isolated data set (or clear when signing out).
+  Future<void> bindTenant(String? userId) async {
+    if (_tenantId == userId && _isInitialized) return;
+
+    _tenantId = userId;
+    _children = [];
+    _currentChild = null;
+    _history = {};
+    _isInitialized = false;
+    notifyListeners();
+
+    if (userId == null) {
+      _isInitialized = true;
+      notifyListeners();
+      return;
+    }
+
+    await loadData();
+  }
+
+  TenantStorage? get _storage =>
+      _tenantId == null ? null : TenantStorage(_tenantId!);
 
   /// Load children and history from storage
   Future<void> loadData() async {
+    final storage = _storage;
+    if (storage == null) {
+      _isInitialized = true;
+      notifyListeners();
+      return;
+    }
+
     try {
       final prefs = await SharedPreferences.getInstance();
-      
-      // Load children
-      final childrenJson = prefs.getString('children');
+
+      await TenantStorage.migrateLegacyString(
+        userId: _tenantId!,
+        legacyKey: 'children',
+        tenantKeyName: 'children',
+      );
+      await TenantStorage.migrateLegacyString(
+        userId: _tenantId!,
+        legacyKey: 'brushing_history',
+        tenantKeyName: 'brushing_history',
+      );
+      await TenantStorage.migrateLegacyString(
+        userId: _tenantId!,
+        legacyKey: 'current_child_id',
+        tenantKeyName: 'current_child_id',
+      );
+
+      final childrenJson = prefs.getString(storage.prefKey('children'));
       if (childrenJson != null) {
         final List<dynamic> decoded = jsonDecode(childrenJson);
         _children = decoded.map((json) => Child.fromJson(json)).toList();
       }
 
       // Load brushing history
-      final historyJson = prefs.getString('brushing_history');
+      final historyJson = prefs.getString(storage.prefKey('brushing_history'));
       if (historyJson != null) {
         final Map<String, dynamic> decoded = jsonDecode(historyJson);
         _history = decoded.map(
@@ -40,7 +88,7 @@ class ChildProvider with ChangeNotifier {
       }
 
       // Set current child if available
-      final currentChildId = prefs.getString('current_child_id');
+      final currentChildId = prefs.getString(storage.prefKey('current_child_id'));
       if (currentChildId != null && _children.isNotEmpty) {
         try {
           _currentChild = _children.firstWhere(
@@ -65,10 +113,13 @@ class ChildProvider with ChangeNotifier {
 
   /// Save children to storage
   Future<void> _saveChildren() async {
+    final storage = _storage;
+    if (storage == null) return;
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final childrenJson = jsonEncode(_children.map((c) => c.toJson()).toList());
-      await prefs.setString('children', childrenJson);
+      await prefs.setString(storage.prefKey('children'), childrenJson);
     } catch (e) {
       debugPrint('Error saving children: $e');
     }
@@ -76,12 +127,15 @@ class ChildProvider with ChangeNotifier {
 
   /// Save brushing history to storage
   Future<void> _saveHistory() async {
+    final storage = _storage;
+    if (storage == null) return;
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final historyJson = jsonEncode(
         _history.map((key, value) => MapEntry(key, value.toJson())),
       );
-      await prefs.setString('brushing_history', historyJson);
+      await prefs.setString(storage.prefKey('brushing_history'), historyJson);
     } catch (e) {
       debugPrint('Error saving history: $e');
     }
@@ -149,9 +203,12 @@ class ChildProvider with ChangeNotifier {
   }
 
   Future<void> _setCurrentChild(String childId) async {
+    final storage = _storage;
+    if (storage == null) return;
+
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('current_child_id', childId);
+      await prefs.setString(storage.prefKey('current_child_id'), childId);
     } catch (e) {
       debugPrint('Error setting current child: $e');
     }
@@ -193,6 +250,23 @@ class ChildProvider with ChangeNotifier {
       await _saveChildren();
       notifyListeners();
     }
+  }
+
+  /// Set a child's points directly (parent adjustment).
+  Future<void> setPoints(String childId, int points) async {
+    final index = _children.indexWhere((c) => c.id == childId);
+    if (index == -1) return;
+
+    _children[index] = _children[index].copyWith(
+      points: points.clamp(0, 999999),
+    );
+
+    if (_currentChild?.id == childId) {
+      _currentChild = _children[index];
+    }
+
+    await _saveChildren();
+    notifyListeners();
   }
 
   /// Get count of brushing sessions today for a child

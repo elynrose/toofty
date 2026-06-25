@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "550197968686",
+    "project_id": "todoos-briktap",
+    "storage_bucket": "todoos-briktap.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550197968686:android:3b714c5c8cd8a26d7484bf",
+        "android_client_info": {
+          "package_name": "com.todoos.todoos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550197968686-anjqattg21mb4ok140r3e5jreeapp5rp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.todoos.todoos",
+            "certificate_hash": "4017bb1cff0cc661b83ca22e6a1c53921d977d95"
+          }
+        },
+        {
+          "client_id": "550197968686-qt6aju8qbufvcfe0del7ounnva0ddnbq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.todoos.todoos",
+            "certificate_hash": "95de479b0f8876fa5f40d9d9909ffaf2684feefc"
+          }
+        },
+        {
+          "client_id": "550197968686-143akab3e6pb084hs79um2d9ctf6013t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjH1Wk7WrT9Su0DyiBUTgy4h4gylVkpIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550197968686-143akab3e6pb084hs79um2d9ctf6013t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "550197968686-8n9pc9rhsotpf5rj9echq19dek1lsj7h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.todoos.todoos"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

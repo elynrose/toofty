@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../utils/require_parent_pin.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:confetti/confetti.dart';
@@ -676,9 +677,12 @@ class _BrushingScreenState extends State<BrushingScreen>
           IconButton(
             icon: const Icon(Icons.settings, color: AppColors.textPrimary),
             onPressed: () async {
-              // Navigate to settings and wait for return
+              final allowed = await requireParentPin(
+                context,
+                requireConfigured: false,
+              );
+              if (!allowed || !mounted) return;
               await Navigator.pushNamed(context, '/settings');
-              // When returning from settings, update timer if settings changed
               if (mounted) {
                 _updateTimerFromSettings();
               }

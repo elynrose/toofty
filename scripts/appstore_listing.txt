@@ -1,0 +1,107 @@
+=== APP STORE CONNECT — COPY & PASTE ===
+
+APP NAME
+Toofty
+
+SUBTITLE (30 chars max)
+Fun brushing coach for kids
+
+BUNDLE ID
+com.briktap.toofty
+
+SKU
+toofty-ios
+
+PRIMARY CATEGORY
+Health & Fitness
+
+SECONDARY CATEGORY (optional)
+Lifestyle
+
+PRIVACY POLICY URL
+https://todoos-briktap.web.app/privacy.html
+
+SUPPORT URL (use privacy page or email — required)
+https://todoos-briktap.web.app/privacy.html
+
+MARKETING URL (optional)
+(leave blank)
+
+ACCOUNT DELETION URL (App Privacy)
+https://todoos-briktap.web.app/delete-account.html
+
+SUPPORT EMAIL
+briktapinc@gmail.com
+
+COPYRIGHT
+© 2026 Briktap Inc.
+
+VERSION
+1.0.0
+
+BUILD
+1
+
+--- PROMOTIONAL TEXT (170 chars, optional) ---
+Help kids build brushing habits with guided timers, cute monster buddies, and parent-set rewards.
+
+--- DESCRIPTION ---
+Toofty turns tooth brushing into something kids actually look forward to. Friendly monster buddies guide children through step-by-step brushing sessions while parents track progress and set meaningful rewards.
+
+FOR KIDS
+• Follow a fun, guided brushing routine with on-screen timers
+• Watch your monster buddy show you where and how to brush
+• Earn points every time you complete a session (up to twice a day)
+• Celebrate when you're done!
+• Pick a monster friend and enjoy music during brushing
+
+FOR PARENTS
+• Create profiles for each child in your family
+• Customize brushing steps, durations, and instructions
+• Set up rewards kids can work toward — ice cream trips, toy shopping, extra screen time, and more
+• Edit, add, or remove rewards anytime
+• Track brushing history on a calendar
+• Protect settings with a parent PIN
+• Sign in with email or Google to sync across devices
+
+HOW IT WORKS
+1. Add your child and choose their monster buddy
+2. Start a brushing session — Toofty walks them through each zone
+3. Kids earn 10 points per completed session
+4. When they have enough points, they can claim rewards you've set up
+
+Toofty is designed for families who want a simple, positive way to build healthy brushing habits — without nagging.
+
+--- KEYWORDS (100 chars max, comma-separated) ---
+brushing,kids,teeth,rewards,family,dental,habits,children,timer,parent
+
+--- APP PRIVACY (Nutrition Labels) ---
+Data collected:
+• Email Address — Linked to identity — App functionality, account management
+• User ID — Linked to identity — App functionality
+• Product Interaction (brushing history, points) — Linked to identity — App functionality
+
+Data NOT collected for tracking/third-party advertising.
+
+--- AGE RATING NOTES ---
+• App requires parent account (email/Google sign-in)
+• Children use profiles under parent supervision
+• No social features, no public profiles
+• Made for Kids: select "No" for Kids Category unless targeting App Store Kids section specifically
+• Complete questionnaire honestly — likely 4+
+
+--- SCREENSHOTS NEEDED ---
+• iPhone 6.7" (1290 x 2796) — at least 3 screenshots
+• iPad 12.9" (2048 x 2732) — at least 3 screenshots (app runs on iPad)
+
+Tip: Run app on simulator, Cmd+S to save screenshots, or use real device screenshots.
+
+--- REVIEW NOTES (for Apple reviewer) ---
+Demo account for review:
+Email: (create a test account and add credentials here before submit)
+Password: 
+
+The app requires sign-in. Parents create child profiles after logging in. Google Sign-In and email/password are supported. Admin features are restricted to Firestore-flagged admin users only.
+
+Privacy policy: https://todoos-briktap.web.app/privacy.html
+Account deletion: https://todoos-briktap.web.app/delete-account.html

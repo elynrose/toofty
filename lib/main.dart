@@ -1,12 +1,17 @@
 import 'dart:ui';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'firebase_options.dart';
+import 'providers/auth_provider.dart';
+import 'providers/app_config_provider.dart';
 import 'providers/brushing_provider.dart';
 import 'providers/music_provider.dart';
 import 'providers/child_provider.dart';
+import 'providers/parent_pin_provider.dart';
 import 'providers/rewards_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/add_child_screen.dart';
@@ -17,6 +22,9 @@ import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -78,41 +86,18 @@ class _TodoosAppState extends State<TodoosApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) {
-            final provider = BrushingProvider();
-            // Load settings asynchronously without blocking
-            provider.loadSettings().catchError((error) {
-              debugPrint('Error initializing BrushingProvider: $error');
-            });
-            return provider;
-          },
-        ),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => AppConfigProvider()),
+        ChangeNotifierProvider(create: (_) => BrushingProvider()),
         ChangeNotifierProvider(
           create: (_) => MusicProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final provider = ChildProvider();
-            // Load children and history asynchronously
-            provider.loadData().catchError((error) {
-              debugPrint('Error initializing ChildProvider: $error');
-            });
-            return provider;
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (_) {
-            final provider = RewardsProvider();
-            provider.loadData().catchError((error) {
-              debugPrint('Error initializing RewardsProvider: $error');
-            });
-            return provider;
-          },
-        ),
+        ChangeNotifierProvider(create: (_) => ChildProvider()),
+        ChangeNotifierProvider(create: (_) => ParentPinProvider()),
+        ChangeNotifierProvider(create: (_) => RewardsProvider()),
       ],
       child: MaterialApp(
-        title: 'todoos - Brushing Helper',
+        title: 'Toofty - Brushing Helper',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         initialRoute: '/',

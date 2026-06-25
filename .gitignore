@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Play Store signing (never commit)
+/android/key.properties
+/android/upload-keystore.jks
+
+# Local / tooling
+tmp/
+.firebase/
+.autopilot.json
+.cursor/
