@@ -16,5 +16,5 @@ class AppLinks {
   static const copyrightUrl =
       'https://todoos-briktap.web.app/copyright.html';
 
-  static const supportEmail = 'briktapinc@gmail.com';
+  static const supportEmail = 'hello@toofty.com';
 }

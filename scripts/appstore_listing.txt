@@ -31,7 +31,7 @@ ACCOUNT DELETION URL (App Privacy)
 https://todoos-briktap.web.app/delete-account.html
 
 SUPPORT EMAIL
-briktapinc@gmail.com
+hello@toofty.com
 
 COPYRIGHT
 © 2026 Briktap Inc.
