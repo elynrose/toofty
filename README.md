@@ -109,7 +109,9 @@ open -a Simulator && flutter run -d ios
 
 1. **Apple Developer Program** ($99/year) — [developer.apple.com/programs](https://developer.apple.com/programs)
 2. Register bundle ID **`com.briktap.toofty`** in [Certificates, Identifiers & Profiles](https://developer.apple.com/account/resources/identifiers/list)
-3. **Distribution certificate** — Xcode creates this on first Archive (Signing & Capabilities → your Team)
+3. Enable **Sign in with Apple** on that App ID (required for App Store Guideline 4.8 when Google Sign-In is offered)
+4. **Distribution certificate** — Xcode creates this on first Archive (Signing & Capabilities → your Team)
+5. In [Firebase Console](https://console.firebase.google.com/project/todoos-briktap/authentication/providers) → **Authentication** → **Sign-in method** → enable **Apple**
 
 ### Build & upload
 
@@ -135,7 +137,7 @@ Upload **`build/ios/ipa/Toofty.ipa`** via [Transporter](https://apps.apple.com/u
 | Privacy Policy URL | `https://todoos-briktap.web.app/privacy.html` |
 | Account deletion URL | `https://todoos-briktap.web.app/delete-account.html` |
 | Category | Health & Fitness or Lifestyle |
-| Version | 1.0.0 (build 1) |
+| Version | 1.0.0 (build 3) |
 
 **Screenshots required:** iPhone 6.7" and iPad 12.9" (app supports iPad).
 

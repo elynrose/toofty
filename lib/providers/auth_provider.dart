@@ -96,6 +96,10 @@ class AuthProvider extends ChangeNotifier {
     return _run(_authService.signInWithGoogle);
   }
 
+  Future<bool> signInWithApple() {
+    return _run(_authService.signInWithApple);
+  }
+
   Future<bool> sendPasswordResetEmail(String email) {
     return _runVoid(() => _authService.sendPasswordResetEmail(email));
   }

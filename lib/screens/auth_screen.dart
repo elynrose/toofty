@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../providers/auth_provider.dart';
 import '../theme/app_colors.dart';
@@ -67,6 +69,22 @@ class _AuthScreenState extends State<AuthScreen>
         SnackBar(content: Text(auth.error!)),
       );
     }
+  }
+
+  Future<void> _signInWithApple() async {
+    final auth = context.read<AuthProvider>();
+    final success = await auth.signInWithApple();
+    if (!success && mounted && auth.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.error!)),
+      );
+    }
+  }
+
+  bool get _showAppleSignIn {
+    if (kIsWeb) return false;
+    return defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS;
   }
 
   Future<void> _resetPassword() async {
@@ -256,6 +274,16 @@ class _AuthScreenState extends State<AuthScreen>
                                 ],
                               ),
                               const SizedBox(height: 16),
+                              if (_showAppleSignIn) ...[
+                                SignInWithAppleButton(
+                                  onPressed:
+                                      auth.isBusy ? null : _signInWithApple,
+                                  style: SignInWithAppleButtonStyle.black,
+                                  borderRadius: BorderRadius.circular(14),
+                                  height: 50,
+                                ),
+                                const SizedBox(height: 12),
+                              ],
                               OutlinedButton.icon(
                                 onPressed:
                                     auth.isBusy ? null : _signInWithGoogle,

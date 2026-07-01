@@ -101,7 +101,9 @@ Demo account for review:
 Email: (create a test account and add credentials here before submit)
 Password: 
 
-The app requires sign-in. Parents create child profiles after logging in. Google Sign-In and email/password are supported. Admin features are restricted to Firestore-flagged admin users only.
+The app requires sign-in. Parents create child profiles after logging in. Sign in with Apple, Google Sign-In, and email/password are supported. Admin features are restricted to Firestore-flagged admin users only.
+
+Sign in with Apple satisfies App Store Guideline 4.8 as an equivalent login option alongside Google. Users may hide their email via Apple's private relay and only name/email are requested.
 
 Privacy policy: https://todoos-briktap.web.app/privacy.html
 Account deletion: https://todoos-briktap.web.app/delete-account.html
