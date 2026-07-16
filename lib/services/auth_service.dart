@@ -112,6 +112,7 @@ class AuthService {
     final oauthCredential = OAuthProvider('apple.com').credential(
       idToken: idToken,
       rawNonce: rawNonce,
+      accessToken: appleCredential.authorizationCode,
     );
 
     final userCredential = await _auth.signInWithCredential(oauthCredential);
@@ -162,6 +163,9 @@ class AuthService {
         return 'Too many attempts. Please try again later.';
       case 'sign-in-cancelled':
         return 'Sign-in was cancelled.';
+      case 'account-exists-with-different-credential':
+        return 'An account already exists with this email using a different '
+            'sign-in method.';
       case 'network-request-failed':
         return 'Network error. Check your connection and try again.';
       case 'operation-not-allowed':

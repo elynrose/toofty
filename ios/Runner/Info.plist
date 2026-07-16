@@ -81,6 +81,8 @@
 		<true/>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false/>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<key>NSCameraUsageDescription</key>
 		<string>Toofty uses the camera to add photos to rewards.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
